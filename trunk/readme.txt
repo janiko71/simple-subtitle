@@ -1,4 +1,5 @@
 === Simple Subtitle ===
+Plugin Name: Simple Subtitle
 Contributors: Janiko
 Requires at least: 4.7
 Tested up to: 6.6.2
