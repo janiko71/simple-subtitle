@@ -3,7 +3,8 @@
  * Plugin Name: Simple Subtitle
  * Description: Ajoute un sous-titre à chaque article dans WordPress.
  * Version: 1.0
- * Author: Janiko
+ * License: GPLv2 or later
+ * Author: Ton nom
  */
 
 // Fonction pour charger les styles du plugin
@@ -107,3 +108,4 @@ function simple_subtitle_save_postdata($post_id) {
     );
 }
 add_action('save_post', 'simple_subtitle_save_postdata');
+
