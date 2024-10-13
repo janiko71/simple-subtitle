@@ -7,6 +7,8 @@
  * Author: Ton nom
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly 
+
 // Fonction pour charger les styles du plugin
 function simple_subtitle_enqueue_styles() {
     // Vérifie si on est sur une page d'un article (post) ou autre contenu
@@ -74,7 +76,7 @@ function simple_subtitle_save_postdata($post_id) {
     }
 
     // Vérifier le nonce
-    if (!wp_verify_nonce($_POST['simple_subtitle_meta_box_nonce'], 'simple_subtitle_save_meta_box_data')) {
+    if ( ! isset( $_POST['simple_subtitle_meta_box_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash ( $_POST['simple_subtitle_meta_box_nonce'] ) ) , 'simple_subtitle_meta_box_nonce' ) ) {
         return;
     }
 
@@ -98,7 +100,7 @@ function simple_subtitle_save_postdata($post_id) {
     }
 
     // Sanitizer la valeur du sous-titre
-    $subtitle = sanitize_text_field($_POST['simple_subtitle_field']);
+    $subtitle = sanitize_text_field(wp_unslash($_POST['simple_subtitle_field']));
 
     // Mettre à jour le meta
     update_post_meta(
