@@ -70,13 +70,8 @@ function simple_subtitle_meta_box_callback($post) {
 
 // Enregistrer le sous-titre lors de la sauvegarde de l'article
 function simple_subtitle_save_postdata($post_id) {
-    // Vérifier si le nonce est défini
-    if (!isset($_POST['simple_subtitle_meta_box_nonce'])) {
-        return;
-    }
-
-    // Vérifier le nonce
-    if ( ! isset( $_POST['simple_subtitle_meta_box_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash ( $_POST['simple_subtitle_meta_box_nonce'] ) ) , 'simple_subtitle_meta_box_nonce' ) ) {
+    // Vérifier si le nonce est défini et valide
+    if (!isset($_POST['simple_subtitle_meta_box_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['simple_subtitle_meta_box_nonce'])), 'simple_subtitle_save_meta_box_data')) {
         return;
     }
 
@@ -86,7 +81,7 @@ function simple_subtitle_save_postdata($post_id) {
     }
 
     // Vérifier les permissions de l'utilisateur
-    if (isset($_POST['post_type']) && 'post' === $_POST['post_type']) {
+    if (isset($_POST['post_type']) && in_array($_POST['post_type'], ['post', 'page'])) {
         if (!current_user_can('edit_post', $post_id)) {
             return;
         }
@@ -95,7 +90,7 @@ function simple_subtitle_save_postdata($post_id) {
     }
 
     // Vérifier si le champ existe dans $_POST
-    if (!array_key_exists('simple_subtitle_field', $_POST)) {
+    if (!isset($_POST['simple_subtitle_field'])) {
         return;
     }
 
@@ -103,11 +98,10 @@ function simple_subtitle_save_postdata($post_id) {
     $subtitle = sanitize_text_field(wp_unslash($_POST['simple_subtitle_field']));
 
     // Mettre à jour le meta
-    update_post_meta(
-        $post_id,
-        '_simple_subtitle',
-        $subtitle
-    );
+    if ($subtitle) {
+        update_post_meta($post_id, '_simple_subtitle', $subtitle);
+    } else {
+        delete_post_meta($post_id, '_simple_subtitle'); // Supprimer si vide
+    }
 }
 add_action('save_post', 'simple_subtitle_save_postdata');
-
